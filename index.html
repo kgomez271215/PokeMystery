@@ -1,0 +1,268 @@
+<!doctype html>
+<html lang="es">
+
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,user-scalable=no" />
+  <meta name="theme-color" content="#0a0420" />
+  <title>PokéMystery Challenge</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Audiowide&family=Outfit:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@500;700&display=swap"
+    rel="stylesheet" />
+
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" />
+  <link rel="stylesheet" href="style.css" />
+</head>
+
+<body>
+
+  <!-- Animated background layers -->
+  <div class="bg-stack" aria-hidden="true">
+    <div class="bg-grad"></div>
+    <div class="bg-orb bg-orb--a"></div>
+    <div class="bg-orb bg-orb--b"></div>
+    <div class="bg-orb bg-orb--c"></div>
+    <canvas id="particles"></canvas>
+    <div class="bg-grid"></div>
+    <div class="bg-noise"></div>
+  </div>
+
+  <!-- Sound toggle, persistent -->
+  <button id="sound-toggle" class="sound-toggle" aria-label="Sonido">
+    <i class="fa-solid fa-volume-high"></i>
+  </button>
+
+  <!-- ==================== HOME ==================== -->
+  <section class="screen screen--home is-active" id="screen-home" data-screen-label="01 Home">
+    <div class="home-floaters" aria-hidden="true">
+      <span class="floater floater--1"></span>
+      <span class="floater floater--2"></span>
+      <span class="floater floater--3"></span>
+      <span class="floater floater--4"></span>
+    </div>
+
+    <div class="home-inner">
+      <div class="home-badge">
+        <span class="badge-dot"></span>
+        <span>Edición Mystery · v1</span>
+      </div>
+
+      <h1 class="home-title">
+        <span class="home-title__line1">PokéMystery</span>
+        <span class="home-title__line2">Challenge</span>
+      </h1>
+
+      <p class="home-sub">Adivina los <b>10 Pokémon</b> secretos.<br />Una sola oportunidad por turno.</p>
+
+      <div class="home-stats">
+        <div class="hstat">
+          <span class="hstat__k">10</span>
+          <span class="hstat__l">Rondas</span>
+        </div>
+        <div class="hstat__sep"></div>
+        <div class="hstat">
+          <span class="hstat__k">5</span>
+          <span class="hstat__l">Opciones</span>
+        </div>
+        <div class="hstat__sep"></div>
+        <div class="hstat">
+          <span class="hstat__k">∞</span>
+          <span class="hstat__l">Diversión</span>
+        </div>
+      </div>
+
+      <button id="btn-start" class="btn btn--primary btn--xl">
+        <span class="btn__glow"></span>
+        <span class="btn__label">
+          <i class="fa-solid fa-play"></i>
+          Iniciar Juego
+        </span>
+        <span class="btn__shine"></span>
+      </button>
+
+      <div class="home-bestrow" id="home-best" hidden>
+        <i class="fa-solid fa-trophy"></i>
+        <span>Mejor récord: <b id="home-best-val">0</b>/10</span>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ==================== QUESTION ==================== -->
+  <section class="screen screen--question" id="screen-question" data-screen-label="02 Question">
+    <header class="qheader">
+      <div class="qheader__top">
+        <div class="round-pill">
+          <i class="fa-solid fa-hashtag"></i>
+          <span>Pokémon <b id="round-now">1</b> de <b id="round-total">10</b></span>
+        </div>
+        <div class="score-pill">
+          <i class="fa-solid fa-star"></i>
+          <span><b id="score-now">0</b></span>
+        </div>
+      </div>
+      <div class="progressbar">
+        <div class="progressbar__fill" id="progress-fill"></div>
+        <div class="progressbar__ticks" id="progress-ticks"></div>
+      </div>
+    </header>
+
+    <div class="qstage">
+      <!-- silhouette stage -->
+      <div class="silo" id="silo">
+        <div class="silo__ring"></div>
+        <div class="silo__ring silo__ring--2"></div>
+        <div class="silo__glow"></div>
+        <img class="silo__img" id="silo-img" alt="" />
+        <div class="silo__qmark"><span>?</span></div>
+        <div class="silo__sparkles" id="silo-sparkles"></div>
+      </div>
+
+      <h2 class="qprompt">¿Quién es este Pokémon?</h2>
+
+      <div class="options" id="options"><!-- buttons injected --></div>
+
+      <!-- Reveal panel: hidden during question -->
+      <div class="reveal" id="reveal" hidden>
+        <div class="reveal__verdict" id="reveal-verdict"></div>
+        <div class="card" id="poke-card">
+          <div class="card__flip-wrapper">
+            <!-- Cara trasera -->
+            <div class="card__back">
+              <div class="card-pokeball">
+                <div class="card-pokeball__top"></div>
+                <div class="card-pokeball__bottom"></div>
+                <div class="card-pokeball__belt"></div>
+                <div class="card-pokeball__btn"></div>
+              </div>
+              <span class="card__back-label">PokéMystery</span>
+            </div>
+            <!-- Cara frontal -->
+            <div class="card__inner">
+              <div class="card__shine"></div>
+              <div class="card__top">
+                <span class="card__name" id="card-name">Pokémon</span>
+                <span class="card__hp"><b id="card-hp">--</b><small>HP</small></span>
+              </div>
+              <div class="card__art">
+                <div class="card__art-bg"></div>
+                <img id="card-img" alt="" />
+              </div>
+              <div class="card__types" id="card-types"></div>
+              <div class="card__stats">
+                <div class="stat"><i class="fa-solid fa-fire"></i><span class="stat__l">Ataque</span><span
+                    class="stat__v" id="card-atk">--</span></div>
+                <div class="stat"><i class="fa-solid fa-shield"></i><span class="stat__l">Defensa</span><span
+                    class="stat__v" id="card-def">--</span></div>
+                <div class="stat"><i class="fa-solid fa-bolt"></i><span class="stat__l">Velocidad</span><span
+                    class="stat__v" id="card-spd">--</span></div>
+                <div class="stat"><i class="fa-solid fa-ruler-vertical"></i><span class="stat__l">Altura</span><span
+                    class="stat__v" id="card-h">--</span></div>
+                <div class="stat"><i class="fa-solid fa-weight-hanging"></i><span class="stat__l">Peso</span><span
+                    class="stat__v" id="card-w">--</span></div>
+                <div class="stat"><i class="fa-solid fa-dna"></i><span class="stat__l">Nº</span><span class="stat__v"
+                    id="card-id">--</span></div>
+              </div>
+              <div class="card__foot">
+                <span id="card-flavor">PokéMystery · entrada secreta</span>
+              </div>
+            </div>
+          </div>
+        </div>
+        <button class="btn btn--primary btn--lg" id="btn-next">
+          <span class="btn__label"><span id="btn-next-label">Siguiente Pokémon</span> <i
+              class="fa-solid fa-arrow-right"></i></span>
+        </button>
+      </div>
+    </div>
+  </section>
+
+  <!-- ==================== FINAL ==================== -->
+  <section class="screen screen--final" id="screen-final" data-screen-label="03 Final">
+    <div class="final-inner">
+      <div class="final-head" id="final-head"></div>
+
+      <div class="scoreboard">
+        <div class="scoreboard__big"><b id="final-score">0</b><small>/10</small></div>
+        <div class="scoreboard__label" id="final-rank">Aspirante</div>
+        <div class="scoreboard__chips" id="final-chips"></div>
+      </div>
+
+      <!-- Premio sorpresa (10/10) -->
+      <div class="prize" id="prize" hidden>
+
+        <!-- Caja Nintendo Switch 2 (se muestra luego del mensaje) -->
+        <div class="ns2-box" id="ns2-box" hidden>
+          <div class="ns2-box__wrap" id="ns2-box-wrap" role="button" tabindex="0"
+            aria-label="Toca para revelar tu regalo">
+
+            <!-- Cara trasera — logo secreto -->
+            <div class="ns2-face ns2-back">
+              <div class="ns2-back__inner">
+                <div class="ns2-secret-ball">
+                  <div class="ns2-secret-ball__top"></div>
+                  <div class="ns2-secret-ball__bottom"></div>
+                  <div class="ns2-secret-ball__belt"></div>
+                  <div class="ns2-secret-ball__btn">?</div>
+                </div>
+                <p class="ns2-back__txt">Un secreto te aguarda…</p>
+              </div>
+            </div>
+
+            <!-- Cara frontal — portada PokéOpia -->
+            <div class="ns2-face ns2-front">
+              <img src="Carátula_Pokémon_Pokopia.png">
+            </div>
+          </div>
+          <p class="ns2-box__caption" id="ns2-caption">Toca la caja para descubrir tu regalo</p>
+        </div>
+      </div>
+
+      <!-- Mensaje Feliz Cumpleaños (overlay, position fixed) -->
+      <div class="bday-msg" id="bday-msg" hidden aria-live="polite">
+        <div class="bday-line" id="bday-l1">Feliz</div>
+        <div class="bday-line bday-line--big" id="bday-l2">Cumpleaños</div>
+      </div>
+
+      <div class="final-actions">
+        <button class="btn btn--primary btn--lg" id="btn-again">
+          <span class="btn__label"><i class="fa-solid fa-rotate-right"></i> <span id="btn-again-label">Jugar de
+              Nuevo</span></span>
+        </button>
+        <button class="btn btn--ghost" id="btn-home">
+          <span class="btn__label"><i class="fa-solid fa-house"></i> Inicio</span>
+        </button>
+      </div>
+    </div>
+    <canvas id="confetti"></canvas>
+  </section>
+
+  <!-- ==================== LOADER ==================== -->
+  <div class="loader" id="loader" hidden>
+    <div class="loader__backdrop"></div>
+    <div class="loader__center">
+      <div class="pokeball">
+        <div class="pokeball__top"></div>
+        <div class="pokeball__bottom"></div>
+        <div class="pokeball__belt"></div>
+        <div class="pokeball__btn"></div>
+      </div>
+      <div class="loader__label" id="loader-label">Cargando…</div>
+    </div>
+  </div>
+
+  <!-- Toast / inline alerts -->
+  <div class="toast-wrap" id="toast-wrap" aria-live="polite"></div>
+
+  <!-- Libs -->
+  <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.3/dist/confetti.browser.min.js"></script>
+
+  <script src="app.js"></script>
+</body>
+
+</html>
