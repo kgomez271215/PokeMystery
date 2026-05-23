@@ -30,11 +30,6 @@
     <div class="bg-noise"></div>
   </div>
 
-  <!-- Sound toggle, persistent -->
-  <button id="sound-toggle" class="sound-toggle" aria-label="Sonido">
-    <i class="fa-solid fa-volume-high"></i>
-  </button>
-
   <!-- ==================== HOME ==================== -->
   <section class="screen screen--home is-active" id="screen-home" data-screen-label="01 Home">
     <div class="home-floaters" aria-hidden="true">
@@ -99,10 +94,15 @@
           <i class="fa-solid fa-hashtag"></i>
           <span>Pokémon <b id="round-now">1</b> de <b id="round-total">10</b></span>
         </div>
+
         <div class="score-pill">
           <i class="fa-solid fa-star"></i>
           <span><b id="score-now">0</b></span>
         </div>
+        <!-- Sound toggle, persistent -->
+        <button id="sound-toggle" class="sound-toggle" aria-label="Sonido">
+          <i class="fa-solid fa-volume-high"></i>
+        </button>
       </div>
       <div class="progressbar">
         <div class="progressbar__fill" id="progress-fill"></div>

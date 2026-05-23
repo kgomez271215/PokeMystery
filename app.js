@@ -661,8 +661,18 @@
       $("#btn-again-label").text("Jugar de Nuevo");
       Sound.win();
       vibrate([40, 60, 40, 60, 80]);
-      setTimeout(fireConfetti, 420);   // esperar a que termine la transición de pantalla (~770ms)
-      setTimeout(showBirthdayMsg, 4700);
+      setTimeout(() => fireConfetti(2000), 420);   // esperar a que termine la transición de pantalla (~770ms)
+      setTimeout(showBirthdayMsg, 3500);
+
+      // Ocultar premio y caja inicialmente para evitar clics a través del overlay
+      $("#prize").prop("hidden", true);
+      $("#ns2-box").prop("hidden", true);
+      const wrap = document.getElementById("ns2-box-wrap");
+      if (wrap) {
+        delete wrap.dataset.flipped;
+        gsap.killTweensOf(wrap);
+        gsap.set(wrap, { clearProps: "all" });
+      }
     } else {
       $("#prize").prop("hidden", true);
       $("#btn-again-label").text("Reintentar");
@@ -675,19 +685,19 @@
     if (typeof confetti !== "function") return;
     const myConfetti = confetti;
     const colors = ["#00e5ff", "#ff2e92", "#ffd84d", "#7b5cff", "#5cffa8", "#ffffff", "#ff9b3d"];
-    const end = Date.now() + (duration || 4800);
+    const end = Date.now() + (duration || 2500);
     (function frame() {
       // Esquinas inferiores hacia arriba — cubren toda la pantalla
-      myConfetti({ particleCount: 12, angle: 58, spread: 80, startVelocity: 52, origin: { x: 0, y: 1 }, colors });
-      myConfetti({ particleCount: 12, angle: 122, spread: 80, startVelocity: 52, origin: { x: 1, y: 1 }, colors });
+      myConfetti({ particleCount: 3, angle: 58, spread: 80, startVelocity: 52, origin: { x: 0, y: 1 }, colors });
+      myConfetti({ particleCount: 2, angle: 122, spread: 80, startVelocity: 52, origin: { x: 1, y: 1 }, colors });
       // Lateral inferior interno
-      myConfetti({ particleCount: 8, angle: 72, spread: 65, startVelocity: 46, origin: { x: 0.18, y: 1 }, colors });
-      myConfetti({ particleCount: 8, angle: 108, spread: 65, startVelocity: 46, origin: { x: 0.82, y: 1 }, colors });
+      myConfetti({ particleCount: 1, angle: 72, spread: 65, startVelocity: 46, origin: { x: 0.18, y: 1 }, colors });
+      myConfetti({ particleCount: 1, angle: 108, spread: 65, startVelocity: 46, origin: { x: 0.82, y: 1 }, colors });
       // Centro inferior — sube al centro y cubre la parte media
-      myConfetti({ particleCount: 10, angle: 90, spread: 130, startVelocity: 55, origin: { x: 0.5, y: 1 }, colors });
+      myConfetti({ particleCount: 2, angle: 90, spread: 130, startVelocity: 55, origin: { x: 0.5, y: 1 }, colors });
       // Laterales medios — partículas laterales
-      myConfetti({ particleCount: 5, angle: 65, spread: 50, startVelocity: 34, origin: { x: 0, y: 0.55 }, colors });
-      myConfetti({ particleCount: 5, angle: 115, spread: 50, startVelocity: 34, origin: { x: 1, y: 0.55 }, colors });
+      myConfetti({ particleCount: 3, angle: 65, spread: 50, startVelocity: 34, origin: { x: 0, y: 0.55 }, colors });
+      myConfetti({ particleCount: 4, angle: 115, spread: 50, startVelocity: 34, origin: { x: 1, y: 0.55 }, colors });
       if (Date.now() < end) requestAnimationFrame(frame);
     })();
   }
@@ -721,13 +731,23 @@
   function showNs2Box() {
     const $prize = $("#prize").prop("hidden", false);
     const $box = $("#ns2-box").prop("hidden", false);
-    const wrap = document.getElementById("ns2-box-wrap");
+    
+    // Clonar el contenedor para limpiar acumulaciones de listeners (de click, touchend, keydown) y efectos de inclinación (tilt)
+    const oldWrap = document.getElementById("ns2-box-wrap");
+    const wrap = oldWrap.cloneNode(true);
+    oldWrap.parentNode.replaceChild(wrap, oldWrap);
+
     const backEl = wrap.querySelector(".ns2-back");
     const frontEl = wrap.querySelector(".ns2-front");
+
+    // Limpiar el estado de volteo y reiniciar el texto caption
+    delete wrap.dataset.flipped;
+    gsap.set("#ns2-caption", { clearProps: "all" });
 
     // Estado inicial: trasera visible, frontal oculta
     gsap.set(frontEl, { visibility: "hidden" });
     gsap.set(backEl, { autoAlpha: 1 });
+    gsap.set(wrap, { clearProps: "all" });
 
     // Caja entra desde abajo con rebote
     gsap.fromTo("#ns2-box",
