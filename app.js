@@ -370,6 +370,7 @@
     gsap.set("#silo", { clearProps: "all" });
     gsap.set(".qprompt", { clearProps: "all" });
     gsap.set(".qstage", { clearProps: "marginTop,rowGap" });
+    gsap.set("#reveal", { clearProps: "all" });
     gsap.set("#poke-card .card__flip-wrapper", { clearProps: "all" });
     gsap.set("#poke-card .card__back", { clearProps: "all" });
     gsap.set("#poke-card .card__inner", { clearProps: "visibility" });
