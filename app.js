@@ -12,7 +12,7 @@
   // Config & State
   // ============================================================
   const CONFIG = {
-    ROUNDS: 1,
+    ROUNDS: 10,
     OPTIONS_PER_ROUND: 5,
     POKEMON_RANGE: 1025, // generations 1-9 + extras
     API_BASE: "https://pokeapi.co/api/v2",
@@ -731,7 +731,7 @@
   function showNs2Box() {
     const $prize = $("#prize").prop("hidden", false);
     const $box = $("#ns2-box").prop("hidden", false);
-    
+
     // Clonar el contenedor para limpiar acumulaciones de listeners (de click, touchend, keydown) y efectos de inclinación (tilt)
     const oldWrap = document.getElementById("ns2-box-wrap");
     const wrap = oldWrap.cloneNode(true);
